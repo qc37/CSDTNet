@@ -1,6 +1,6 @@
-class AvgTopKPooling(nn.Module):
+class Pooling(nn.Module):
     def __init__(self, ksize=3, kk=3):
-        super(AvgTopKPooling, self).__init__()
+        super(Pooling, self).__init__()
         self.ksize = ksize
         self.kk = kk
 
