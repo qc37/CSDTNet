@@ -2,21 +2,14 @@ class SA_Layer(nn.Module):
     def __init__(self, channels):
         super(SA_Layer, self).__init__()
 
-        # self.q_conv.weight = self.k_conv.weight
-        # self.q_conv.bias = self.k_conv.bias
-        # self.v_conv = nn.Conv1d(channels, channels, 1)
-
-        # Position Attention Module (PAM) Convolutions
         self.q_conv_pam = nn.Conv1d(channels, channels // 4, 1, bias=False)
         self.k_conv_pam = nn.Conv1d(channels, channels // 4, 1, bias=False)
         self.v_conv_pam = nn.Conv1d(channels, channels, 1)
 
-        # Channel Attention Module (CAM) Convolutions
         self.q_conv_cam = nn.Conv1d(channels, channels // 4, 1, bias=False)
         self.k_conv_cam = nn.Conv1d(channels, channels // 4, 1, bias=False)
         self.v_conv_cam = nn.Conv1d(channels, channels, 1)
 
-        # Normalization and activation
         self.trans_conv_pam = nn.Conv1d(channels, channels, 1)
         self.trans_conv_cam = nn.Conv1d(channels, channels, 1)
         self.after_norm_pam = nn.BatchNorm1d(channels)
@@ -24,7 +17,6 @@ class SA_Layer(nn.Module):
         self.act = nn.ReLU()
         self.softmax = nn.Softmax(dim=-1)
 
-        # Final convolution layer
         self.final_conv = nn.Sequential(
             nn.Conv1d(channels, channels, 1, bias=False),
             nn.BatchNorm1d(channels),
@@ -56,10 +48,8 @@ class SA_Layer(nn.Module):
         x_r_cam = self.act(self.after_norm_cam(self.trans_conv_cam(x - x_r_cam)))
         cam_output = x + x_r_cam
 
-        # Combine the outputs of PAM and CAM
         feat_sum =pam_output + cam_output
 
-        # Final convolution
         output = self.final_conv(feat_sum)
 
         return output
